@@ -17,6 +17,12 @@ class StyleForMixin:
                 fild.widget.attrs['class'] = 'form-control'
 
 
+class ProductModeratorForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image', 'category', 'price']
+
+
 class ProductForm(ModelForm):
     class Meta:
         model = Product
