@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from catalog.forms import CategoryForm, ProductForm, ProductModeratorForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from catalog.services import get_product_from_cache, get_products_by_category
 
 
 class HomeView(ListView):
@@ -18,6 +19,9 @@ class ContactView(ListView):
 class ProductListView(ListView):
     model = Product
 
+    def get_queryset(self):
+        return get_product_from_cache()
+
 
 class ProductDetail(DetailView):
     model = Product
@@ -25,11 +29,11 @@ class ProductDetail(DetailView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        self.object.views_counter += 1
-        self.object.save()
-        return self.object
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     self.object.views_counter += 1
+    #     self.object.save()
+    #     return self.object
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -66,3 +70,13 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:products_list")
+
+
+class CategoryProductListView(ListView):
+    model = Product
+    template_name = "catalog/category_product_list.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category_id = self.kwargs.get("category_id")
+        return get_products_by_category(category_id)
