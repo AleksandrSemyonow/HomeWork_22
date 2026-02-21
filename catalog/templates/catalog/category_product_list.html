@@ -1,0 +1,25 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Список продуктов в категории{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Продукты в категории</h1>
+
+    {% if products %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for product in products %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5>{{product.name}}</h5>
+                        <h6>Категория: {{product.category}}</h6>
+                        <p>Цена: {{product.price}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
